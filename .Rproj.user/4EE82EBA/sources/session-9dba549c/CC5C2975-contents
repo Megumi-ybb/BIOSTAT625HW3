@@ -1,0 +1,44 @@
+#' Simple linear model
+#'
+#' This function will generate coefficients for each variables under simple linear
+#' regression model
+#'
+#' @param X A vector or matrix, dependent variables
+#' @param Y A vector of nuber, response of the dependent variables
+#' @param inter A Boolean variable, if inter = TRUE, then we are fitting the model with
+#' intercept. By default, the inter is set to be FALSE
+#'
+#' @return A list of coefficients corresponding to each variables
+#' @examples
+#' coef(sampledata[,1:3],sampledata[,4])
+#' #or
+#' X = mvrnorm(100,mu = c(0,0),Sigma = matrix(c(1,.5,.5,1),2,2))
+#' Y = rnorm(100,1)
+#' coef(X,Y,inter = TRUE)
+#' @export
+yblm <- function(X,Y,inter = FALSE) {
+  X_temp = data.frame(X)
+  Y_temp = data.frame(Y)
+
+  if(nrow(X_temp) != nrow(Y_temp)){
+    return("X and Y are in different size")
+  }
+
+  X = as.matrix(X)
+  Y = as.matrix(Y)
+  if(inter == TRUE){
+    X = cbind(rep(1,nrow(X_temp)),X)
+    coef_matrix = solve(t(X) %*% X)  %*% t(X) %*% Y
+    # rownames(coef_matrix) = c("beta0",paste0("beta",1:ncol(X_temp)))
+    # return(coef_matrix)
+  }else{
+    coef_matrix = solve(t(X) %*% X)  %*% t(X) %*% Y
+    # rownames(coef_matrix) = paste0("beta",1:ncol(X_temp))
+    # return(coef_matrix )
+  }
+
+  predictY = X %*% coef_matrix
+  res = Y - predictY
+
+
+}

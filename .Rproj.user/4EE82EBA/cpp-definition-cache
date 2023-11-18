@@ -1,0 +1,19 @@
+[
+    {
+        "file": "/Users/ybb/Documents/ybLN/src/ybanova.cpp",
+        "file_last_write": 1700253881.0,
+        "definitions": [
+            {
+                "usr": "c:@F@ybanova#$@N@Rcpp@S@Vector>#VI19#@N@Rcpp@ST>1#T@PreserveStorage#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "ybanova(List)",
+                "file": "/Users/ybb/Documents/ybLN/src/ybanova.cpp",
+                "line": 5,
+                "column": 11,
+                "hidden": false
+            }
+        ],
+        "hidden": false
+    }
+]

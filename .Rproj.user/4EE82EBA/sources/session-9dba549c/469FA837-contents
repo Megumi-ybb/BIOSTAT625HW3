@@ -1,0 +1,164 @@
+#' Simple linear model
+#'
+#' This function will generate coefficients for each variables under simple linear
+#' regression model
+#'
+#' @importFrom stats pf
+#' @importFrom stats pt
+#' @importFrom bench mark
+#' @importFrom MASS mvrnorm
+#'
+#' @param X A numeric matrix or data frame representing the independent variables.
+#' @param Y A numeric vector or data frame representing the dependent variable.
+#' @param inter Logical; if TRUE, includes an intercept in the model, otherwise fits without an intercept.
+#'
+#' @details
+#' The `yblm` function performs a basic linear regression analysis between a set of independent
+#' variables X and a dependent variable Y. The function allows for the inclusion or exclusion
+#' of an intercept in the model based on the `inter` argument.
+#'
+#' Internally, `yblm` first checks if X and Y have the same number of observations. If they don't,
+#' it returns an error message. It then converts X and Y into matrix forms for the calculations.
+#'
+#' When `inter` is set to TRUE, an intercept is included in the model. The function calculates the
+#' coefficients of the linear model by solving the normal equation (X'X)^{-1}X'Y. When `inter` is FALSE,
+#' the model is fitted without an intercept.
+#'
+#' After fitting the model, `yblm` computes various statistics including:
+#' - Residuals of the model.
+#' - Mean Squared Error (MSE) and Root of Squared Error (RSE).
+#' - Degrees of freedom for the model and residuals.
+#' - Coefficient standard errors, t-values, and p-values.
+#' - R-squared and Adjusted R-squared values.
+#' - F-statistic and its p-value for the overall model significance.
+#'
+#' The function returns a list containing the model coefficients, predicted values, residuals,
+#' and the computed statistics. This output can be used for further analysis and diagnostics
+#' of the linear model.
+#'
+#' It's important to note that `yblm` assumes that the relationship between \(X\) and \(Y\) is linear and
+#' does not handle cases of multidisciplinary or non-linearity. Users should perform appropriate diagnostic
+#' checks on residuals and other assumptions of linear regression for a thorough analysis.
+#'
+#'
+#' @return A list of linear regression results including coefficients, residuals, residual standard errors, R squares, and F-statistics
+#' \itemize{
+#'   \item \code{coef_matrix}: A matrix containing value, Estimate standard error, t value and Pr(>|t|) of each coefficients
+#'   \item \code{predict}: The predicted values by the model
+#'   \item \code{residual}: The residuals, which is response minus predicted values.
+#'   \item \code{SS_X}: Sum of residuals
+#'   \item \code{R_df}: The residual degree of freedom.
+#'   \item \code{M_df}: The degree of freedom between groups.
+#'   \item \code{RSE}: The standard error of the residual
+#'   \item \code{R_square}: The R square score.
+#'   \item \code{Adj_R_square}: The adjusted R square
+#'   \item \code{F_statistic}: The F statistic
+#'   \item \code{coef}: The coefficient of the variables in the model
+#'   \item \code{p_value_F}: p value of F-statistic
+#' }
+#' @examples
+#' #Start with the sample data given in the package
+#' yblm(sampledata[,1:3],sampledata[,4]) -> fit_model
+#' #The coefficents and their information
+#' fit_model$coef_matrix
+#' #The predicted value based on linear model
+#' fit_model$predict
+#' #The residual based on linear model
+#' fit_model$residual
+#' #The degree of freedom of Residual
+#' fit_model$R_df
+#' #The degree of freedom between groups
+#' fit_model$M_df
+#' #More information can be viewed in the model object
+#' fit_model
+#'
+#' #-------------or---------------------------
+#' X = mvrnorm(100,mu = c(0,0),Sigma = matrix(c(1,.5,.5,1),2,2))
+#' Y = rnorm(100,1)
+#' yblm(X,Y,inter = TRUE) -> fit_model2
+#' #The coefficents and their information
+#' fit_model2$coef_matrix
+#' #The predicted value based on linear model
+#' fit_model2$predict
+#' #The residual based on linear model
+#' fit_model2$residual
+#' #The degree of freedom of Residual
+#' fit_model2$R_df
+#' #The degree of freedom between groups
+#' fit_model2$M_df
+#' #More information can be viewed in the model object
+#' fit_model2
+#' @export
+yblm <- function(X,Y,inter = FALSE) {
+  X_temp = data.frame(X)
+  Y_temp = data.frame(Y)
+
+  #Check if X and Y are in the same dimension
+  if(nrow(X_temp) != nrow(Y_temp)){
+    return("X and Y are in different size")
+  }
+
+  X = as.matrix(X)
+  Y = as.matrix(Y)
+  #Check if there is intercept and give different results
+  if(inter == TRUE){
+    X = cbind(rep(1,nrow(X_temp)),X)
+    coef_matrix = solve(t(X) %*% X)  %*% t(X) %*% Y
+  }else{
+    coef_matrix = solve(t(X) %*% X)  %*% t(X) %*% Y
+  }
+
+  num_var = ncol(X)
+  #Predict Value
+  predictY = X %*% coef_matrix
+  #Residual
+  res = Y - predictY
+
+  #The Sum sq and Mean sq that will be used later
+  MSE = (t(res) %*% res)/(nrow(X) - num_var)
+  RSE = sqrt(MSE)
+
+  #Degree of freedom
+  R_df = nrow(X) - num_var
+  M_df = num_var - inter
+
+  #Sd of beta
+  sd_beta = (as.matrix(diag(MSE[1] * solve(t(X) %*% X))))^(.5)
+
+#------------Calculation of R square and F statistic-----------------------------------
+  temp_se = t(res) %*% res
+  if(inter){
+    temp_sr = sum((predictY - mean(Y))^2)
+    R_square = (temp_sr)/(temp_se + temp_sr)
+    Adj_R_suqre = 1 - (1 - R_square) * (nrow(X) - 1 )/(nrow(X) - num_var)
+
+    F_statistic = (temp_sr*R_df)/(temp_se*M_df)
+  }else{
+    temp_sr = sum(predictY^2)
+    R_square = 1 - (temp_se)/(temp_se + temp_sr)
+    Adj_R_suqre = 1 - (1 - R_square) * nrow(X )/(nrow(X) - num_var)
+    F_statistic = (temp_sr*R_df)/(temp_se*M_df)
+  }
+
+  #Calculate t value and p value
+  t_value = coef_matrix/sd_beta
+  beta_p_value = 2 * (1 - pt(abs(t_value), R_df))
+  p_value_F <- 1 - pf(F_statistic, num_var - inter, R_df - inter)
+
+  #Genearate coefficient matrix
+  Coef_sum_matrix = cbind(coef_matrix,sd_beta,t_value,beta_p_value)
+  colnames(Coef_sum_matrix) = c("Estimate","Std.Error","t value","Pr(>|t|)")
+    if(inter == TRUE){
+      rownames(Coef_sum_matrix) = paste0("beta",0:(ncol(X)-1))
+    }else{
+      rownames(Coef_sum_matrix) = paste0("beta",1:ncol(X))
+    }
+
+  #Gnerate Sum of Squares for ANOVA table
+  SS_X = temp_sr
+
+
+  return(list(SS_X = SS_X,coef = coef_matrix, predict = predictY,residual = res, RSE = RSE[1],R_df = R_df,M_df = M_df,
+              R_square = R_square,Adj_R_square = Adj_R_suqre,F_statistic = F_statistic,coef_matrix = Coef_sum_matrix,p_value_F = p_value_F))
+
+}
