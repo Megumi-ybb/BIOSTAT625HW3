@@ -33,11 +33,6 @@ The `ybanova` function is another version of `anova()` function in R. This funct
 
 Further more, this package includes a sample dataset called `sampledata`, which includes `X = (X1,X2,X3), Y` where X_i,Y follows standard normal distribution and they are independent with each other. In this dataset, we have 100 X and Ys as a sample data for the function. Also, in the `testthat`, we used `iris` as a real world sample dataset to help justify the correctness of the functions in this package.
 
-# Install Package
-```{r}
-devtools::install_github("Megumi-ybb/BIOSTAT625HW3")
-```
-
 # Introduction of the `yblm` in the package
 
 First, we need to know that this function is generally used in form of `yblm(X,Y,inter)`. `X` is a numeric matrix or data frame representing the independent variables.`Y` is a numeric vector or data frame representing the dependent variable. And `inter` is logical if TRUE, includes an intercept in the model, otherwise fits without an intercept.
