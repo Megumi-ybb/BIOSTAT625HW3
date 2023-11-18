@@ -93,11 +93,6 @@ yblm <- function(X,Y,inter = FALSE) {
   X_temp = data.frame(X)
   Y_temp = data.frame(Y)
 
-  #Check if X and Y are in the same dimension
-  if(nrow(X_temp) != nrow(Y_temp)){
-    return("X and Y are in different size")
-  }
-
   X = as.matrix(X)
   Y = as.matrix(Y)
   #Check if there is intercept and give different results
