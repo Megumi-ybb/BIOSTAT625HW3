@@ -1,7 +1,7 @@
 # Linear Regression Package
 
 [![R-CMD-check](https://github.com/Megumi-ybb/BIOSTAT625HW3/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Megumi-ybb/BIOSTAT625HW3/actions/workflows/R-CMD-check.yaml)
-
+[![codecov](https://codecov.io/gh/Megumi-ybb/BIOSTAT625HW3/graph/badge.svg?token=H57VKF3AWP)](https://codecov.io/gh/Megumi-ybb/BIOSTAT625HW3)
 ## Installation
 
 You can install the development version of ybLN from [GitHub](https://github.com/) with:
