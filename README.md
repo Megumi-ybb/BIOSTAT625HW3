@@ -11,3 +11,6 @@ The `yblm` function is another version of this methodology, offering enhanced fl
 The `ybanova` function is another version of `anova()` function in R. This function will generate an ANOVA table, which is similar to the R's regular function.
 
 Further more, this package includes a sample dataset called `sampledata`, which includes `X = (X1,X2,X3), Y` where X_i,Y follows standard normal distribution and they are independent with each other. In this dataset, we have 100 X and Ys as a sample data for the function. Also, in the `testthat`, we used `iris` as a real world sample dataset to help justify the correctness of the functions in this package.
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/Megumi-ybb/BIOSTAT625HW3/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Megumi-ybb/BIOSTAT625HW3/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
