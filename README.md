@@ -1,5 +1,7 @@
 # Linear Regression Package
 
+[![R-CMD-check](https://github.com/Megumi-ybb/BIOSTAT625HW3/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Megumi-ybb/BIOSTAT625HW3/actions/workflows/R-CMD-check.yaml)
+
 ## Installation
 
 You can install the development version of ybLN from [GitHub](https://github.com/) with:
@@ -25,5 +27,3 @@ Further more, this package includes a sample dataset called `sampledata`, which 
 
 
 
-
-[![R-CMD-check](https://github.com/Megumi-ybb/BIOSTAT625HW3/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Megumi-ybb/BIOSTAT625HW3/actions/workflows/R-CMD-check.yaml)
